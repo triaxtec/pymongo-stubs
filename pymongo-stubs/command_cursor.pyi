@@ -1,0 +1,49 @@
+from typing import Any, Optional
+
+from pymongo.errors import ConnectionFailure as ConnectionFailure
+from pymongo.errors import InvalidOperation as InvalidOperation
+from pymongo.errors import NotMasterError as NotMasterError
+from pymongo.errors import OperationFailure as OperationFailure
+
+class CommandCursor:
+    def __init__(
+        self,
+        collection: Any,
+        cursor_info: Any,
+        address: Any,
+        retrieved: int = ...,
+        batch_size: int = ...,
+        max_await_time_ms: Optional[Any] = ...,
+        session: Optional[Any] = ...,
+        explicit_session: bool = ...,
+    ) -> None: ...
+    def __del__(self) -> None: ...
+    def close(self) -> None: ...
+    def batch_size(self, batch_size: Any): ...
+    @property
+    def alive(self): ...
+    @property
+    def cursor_id(self): ...
+    @property
+    def address(self): ...
+    @property
+    def session(self): ...
+    def __iter__(self) -> Any: ...
+    def next(self): ...
+    __next__: Any = ...
+    def __enter__(self): ...
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None: ...
+
+class RawBatchCommandCursor(CommandCursor):
+    def __init__(
+        self,
+        collection: Any,
+        cursor_info: Any,
+        address: Any,
+        retrieved: int = ...,
+        batch_size: int = ...,
+        max_await_time_ms: Optional[Any] = ...,
+        session: Optional[Any] = ...,
+        explicit_session: bool = ...,
+    ) -> None: ...
+    def __getitem__(self, index: Any) -> None: ...
