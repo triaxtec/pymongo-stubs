@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Union, Literal
 
 from pymongo import common as common
 
@@ -25,15 +25,15 @@ class CollationCaseFirst:
 class Collation:
     def __init__(
         self,
-        locale: Any,
-        caseLevel: Optional[Any] = ...,
-        caseFirst: Optional[Any] = ...,
-        strength: Optional[Any] = ...,
-        numericOrdering: Optional[Any] = ...,
-        alternate: Optional[Any] = ...,
-        maxVariable: Optional[Any] = ...,
-        normalization: Optional[Any] = ...,
-        backwards: Optional[Any] = ...,
+        locale: str,
+        caseLevel: bool = ...,
+        caseFirst: Union[Literal["upper"], Literal["lower"], Literal["off"]] = ...,
+        strength: Union[Literal[1], Literal[2], Literal[3], Literal[4], Literal[5]] = ...,
+        numericOrdering: bool = ...,
+        alternate: Union[Literal["non-ignorable"], Literal["shifted"]] = ...,
+        maxVariable: Union[Literal["punct"], Literal["space"]] = ...,
+        normalization: bool = ...,
+        backwards: bool = ...,
         **kwargs: Any,
     ) -> None: ...
     @property

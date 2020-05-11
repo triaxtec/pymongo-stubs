@@ -1,5 +1,5 @@
 import collections
-from typing import Any, Optional
+from typing import Any, Optional, Callable
 
 from pymongo import monotonic as monotonic
 from pymongo.errors import ConfigurationError as ConfigurationError
@@ -14,7 +14,7 @@ from pymongo.read_preferences import ReadPreference as ReadPreference
 from pymongo.write_concern import WriteConcern as WriteConcern
 
 class SessionOptions:
-    def __init__(self, causal_consistency: bool = ..., default_transaction_options: Optional[Any] = ...) -> None: ...
+    def __init__(self, causal_consistency: bool = ..., default_transaction_options: Optional[TransactionOptions] = ...) -> None: ...
     @property
     def causal_consistency(self): ...
     @property
@@ -23,17 +23,17 @@ class SessionOptions:
 class TransactionOptions:
     def __init__(
         self,
-        read_concern: Optional[Any] = ...,
-        write_concern: Optional[Any] = ...,
-        read_preference: Optional[Any] = ...,
+        read_concern: Optional[ReadConcern] = ...,
+        write_concern: Optional[WriteConcern] = ...,
+        read_preference: Optional[ReadPreference] = ...,
         max_commit_time_ms: Optional[Any] = ...,
     ) -> None: ...
     @property
-    def read_concern(self): ...
+    def read_concern(self) -> ReadConcern: ...
     @property
-    def write_concern(self): ...
+    def write_concern(self) -> WriteConcern: ...
     @property
-    def read_preference(self): ...
+    def read_preference(self) -> ReadPreference: ...
     @property
     def max_commit_time_ms(self): ...
 
@@ -77,12 +77,12 @@ class ClientSession:
     def operation_time(self): ...
     def with_transaction(
         self,
-        callback: Any,
-        read_concern: Optional[Any] = ...,
-        write_concern: Optional[Any] = ...,
-        read_preference: Optional[Any] = ...,
+        callback: Callable[[ClientSession], Any],
+        read_concern: Optional[ReadConcern] = ...,
+        write_concern: Optional[WriteConcern] = ...,
+        read_preference: Optional[ReadPreference] = ...,
         max_commit_time_ms: Optional[Any] = ...,
-    ): ...
+    ) -> Callable[[ClientSession], Any]: ...
     def start_transaction(
         self,
         read_concern: Optional[Any] = ...,

@@ -1,4 +1,4 @@
-from typing import Any, Literal, Union
+from typing import Tuple
 
 from pymongo.collection import ReturnDocument as ReturnDocument
 from pymongo.common import MAX_SUPPORTED_WIRE_VERSION as MAX_SUPPORTED_WIRE_VERSION
@@ -26,10 +26,10 @@ TEXT: str
 OFF: int
 SLOW_ONLY: int
 ALL: int
-version_tuple: Any
+version_tuple: Tuple[int, int, int]
 
-def get_version_string(): ...
+def get_version_string() -> str: ...
 
-version: Any
+version: str
 
-def has_c(): ...
+def has_c() -> bool: ...

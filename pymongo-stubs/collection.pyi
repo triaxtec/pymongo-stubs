@@ -6,18 +6,20 @@ from pymongo import message as message
 from pymongo.bulk import BulkOperationBuilder as BulkOperationBuilder
 from pymongo.change_stream import CollectionChangeStream as CollectionChangeStream
 from pymongo.client_session import ClientSession
-from pymongo.collation import validate_collation_or_none as validate_collation_or_none
+from pymongo.collation import validate_collation_or_none as validate_collation_or_none, Collation
 from pymongo.command_cursor import CommandCursor as CommandCursor
 from pymongo.command_cursor import RawBatchCommandCursor as RawBatchCommandCursor
 from pymongo.common import ORDERED_TYPES as ORDERED_TYPES
 from pymongo.cursor import Cursor as Cursor
 from pymongo.cursor import RawBatchCursor as RawBatchCursor
+from pymongo.database import Database
 from pymongo.errors import BulkWriteError as BulkWriteError
 from pymongo.errors import ConfigurationError as ConfigurationError
 from pymongo.errors import InvalidName as InvalidName
 from pymongo.errors import InvalidOperation as InvalidOperation
 from pymongo.errors import OperationFailure as OperationFailure
 from pymongo.operations import IndexModel as IndexModel
+from pymongo.read_concern import ReadConcern
 from pymongo.read_preferences import ReadPreference as ReadPreference
 from pymongo.results import BulkWriteResult as BulkWriteResult
 from pymongo.results import DeleteResult as DeleteResult
@@ -37,14 +39,14 @@ class Collection(common.BaseObject):
         name: Any,
         create: bool = ...,
         codec_options: Optional[Any] = ...,
-        read_preference: Optional[Any] = ...,
-        write_concern: Optional[Any] = ...,
-        read_concern: Optional[Any] = ...,
-        session: Optional[Any] = ...,
+        read_preference: Optional[ReadPreference] = ...,
+        write_concern: Optional[WriteConcern] = ...,
+        read_concern: Optional[ReadConcern] = ...,
+        session: Optional[ClientSession] = ...,
         **kwargs: Any,
     ) -> None: ...
-    def __getattr__(self, name: Any): ...
-    def __getitem__(self, name: Any): ...
+    def __getattr__(self, name: Any) -> Collection: ...
+    def __getitem__(self, name: Any) -> Collection: ...
     def __eq__(self, other: Any) -> Any: ...
     def __ne__(self, other: Any) -> Any: ...
     @property
@@ -52,22 +54,22 @@ class Collection(common.BaseObject):
     @property
     def name(self): ...
     @property
-    def database(self): ...
+    def database(self) -> Database: ...
     def with_options(
         self,
         codec_options: Optional[Any] = ...,
-        read_preference: Optional[Any] = ...,
-        write_concern: Optional[Any] = ...,
-        read_concern: Optional[Any] = ...,
+        read_preference: Optional[ReadPreference] = ...,
+        write_concern: Optional[WriteConcern] = ...,
+        read_concern: Optional[ReadConcern] = ...,
     ): ...
     def initialize_unordered_bulk_op(self, bypass_document_validation: bool = ...): ...
     def initialize_ordered_bulk_op(self, bypass_document_validation: bool = ...): ...
     def bulk_write(
         self, requests: Any, ordered: bool = ..., bypass_document_validation: bool = ..., session: Optional[Any] = ...
     ): ...
-    def insert_one(self, document: Any, bypass_document_validation: bool = ..., session: Optional[Any] = ...): ...
+    def insert_one(self, document: Any, bypass_document_validation: bool = ..., session: Optional[ClientSession] = ...): ...
     def insert_many(
-        self, documents: Any, ordered: bool = ..., bypass_document_validation: bool = ..., session: Optional[Any] = ...
+        self, documents: Any, ordered: bool = ..., bypass_document_validation: bool = ..., session: Optional[ClientSession] = ...
     ): ...
     def replace_one(
         self,
@@ -75,8 +77,8 @@ class Collection(common.BaseObject):
         replacement: Any,
         upsert: bool = ...,
         bypass_document_validation: bool = ...,
-        collation: Optional[Any] = ...,
-        session: Optional[Any] = ...,
+        collation: Optional[Collation] = ...,
+        session: Optional[ClientSession] = ...,
     ): ...
     def update_one(
         self,
@@ -84,9 +86,9 @@ class Collection(common.BaseObject):
         update: Any,
         upsert: bool = ...,
         bypass_document_validation: bool = ...,
-        collation: Optional[Any] = ...,
+        collation: Optional[Collation] = ...,
         array_filters: Optional[Any] = ...,
-        session: Optional[Any] = ...,
+        session: Optional[ClientSession] = ...,
     ): ...
     def update_many(
         self,
@@ -95,12 +97,12 @@ class Collection(common.BaseObject):
         upsert: bool = ...,
         array_filters: Optional[Any] = ...,
         bypass_document_validation: bool = ...,
-        collation: Optional[Any] = ...,
-        session: Optional[Any] = ...,
+        collation: Optional[Collation] = ...,
+        session: Optional[ClientSession] = ...,
     ): ...
     def drop(self, session: Optional[Any] = ...) -> None: ...
-    def delete_one(self, filter: Any, collation: Optional[Any] = ..., session: Optional[Any] = ...): ...
-    def delete_many(self, filter: Any, collation: Optional[Any] = ..., session: Optional[Any] = ...): ...
+    def delete_one(self, filter: Any, collation: Optional[Collation] = ..., session: Optional[ClientSession] = ...) -> DeleteResult: ...
+    def delete_many(self, filter: Any, collation: Optional[Collation] = ..., session: Optional[ClientSession] = ...) -> DeleteResult: ...
     def find_one(self, filter: Optional[Any] = ..., *args: Any, **kwargs: Any): ...
     def find(self, *args: Any, **kwargs: Any): ...
     def find_raw_batches(self, *args: Any, **kwargs: Any): ...
@@ -122,7 +124,7 @@ class Collection(common.BaseObject):
     def list_indexes(self, session: Optional[Any] = ...): ...
     def index_information(self, session: Optional[Any] = ...): ...
     def options(self, session: Optional[Any] = ...): ...
-    def aggregate(self, pipeline: Any, session: Optional[Any] = ..., **kwargs: Any): ...
+    def aggregate(self, pipeline: Any, session: Optional[ClientSession] = ..., **kwargs: Any) -> CommandCursor: ...
     def aggregate_raw_batches(self, pipeline: Any, **kwargs: Any): ...
     def watch(
         self,
@@ -131,9 +133,9 @@ class Collection(common.BaseObject):
         resume_after: Optional[Any] = ...,
         max_await_time_ms: Optional[Any] = ...,
         batch_size: Optional[Any] = ...,
-        collation: Optional[Any] = ...,
+        collation: Optional[Collation] = ...,
         start_at_operation_time: Optional[Any] = ...,
-        session: Optional[Any] = ...,
+        session: Optional[ClientSession] = ...,
         start_after: Optional[Any] = ...,
     ): ...
     def group(
